@@ -48,7 +48,7 @@ class Trainer(object):
     self.experience_history_size = experience_history_size
     self.max_global_time_step = max_global_time_step
     self.action_size = Environment.get_action_size(env_type, env_name)
-    
+
     self.local_network = UnrealModel(self.action_size,
                                      thread_index,
                                      use_pixel_change,
@@ -62,7 +62,7 @@ class Trainer(object):
     self.apply_gradients = grad_applier.minimize_local(self.local_network.total_loss,
                                                        global_network.get_vars(),
                                                        self.local_network.get_vars())
-    
+
     self.sync = self.local_network.sync_from(global_network)
     self.experience = Experience(self.experience_history_size)
     self.local_t = 0
@@ -77,18 +77,18 @@ class Trainer(object):
 
   def stop(self):
     self.environment.stop()
-    
+
   def _anneal_learning_rate(self, global_time_step):
     learning_rate = self.initial_learning_rate * (self.max_global_time_step - global_time_step) / self.max_global_time_step
     if learning_rate < 0.0:
       learning_rate = 0.0
     return learning_rate
 
-  
+
   def choose_action(self, pi_values):
     return np.random.choice(range(len(pi_values)), p=pi_values)
 
-  
+
   def _record_score(self, sess, summary_writer, summary_op, score_input, score, global_t):
     summary_str = sess.run(summary_op, feed_dict={
       score_input: score
@@ -96,7 +96,7 @@ class Trainer(object):
     summary_writer.add_summary(summary_str, global_t)
     summary_writer.flush()
 
-    
+
   def set_start_time(self, start_time):
     self.start_time = start_time
 
@@ -111,18 +111,18 @@ class Trainer(object):
     last_action_reward = ExperienceFrame.concat_action_and_reward(last_action,
                                                                   self.action_size,
                                                                   last_reward)
-    
+
     pi_, _ = self.local_network.run_base_policy_and_value(sess,
                                                           self.environment.last_state,
                                                           last_action_reward)
     action = self.choose_action(pi_)
-    
+
     new_state, reward, terminal, pixel_change = self.environment.process(action)
-    
+
     frame = ExperienceFrame(prev_state, reward, action, terminal, pixel_change,
                             last_action, last_reward)
     self.experience.add_frame(frame)
-    
+
     if terminal:
       self.environment.reset()
     if self.experience.is_full():
@@ -137,7 +137,7 @@ class Trainer(object):
       steps_per_sec = global_t / elapsed_time
       print("### Performance : {} STEPS in {:.0f} sec. {:.0f} STEPS/sec. {:.2f}M STEPS/hour".format(
         global_t,  elapsed_time, steps_per_sec, steps_per_sec * 3600 / 1000000.))
-    
+
 
   def _process_base(self, sess, global_t, summary_writer, summary_op, score_input):
     # [Base A3C]
@@ -159,12 +159,12 @@ class Trainer(object):
       last_action_reward = ExperienceFrame.concat_action_and_reward(last_action,
                                                                     self.action_size,
                                                                     last_reward)
-      
+
       pi_, value_ = self.local_network.run_base_policy_and_value(sess,
                                                                  self.environment.last_state,
                                                                  last_action_reward)
-      
-      
+
+
       action = self.choose_action(pi_)
 
       states.append(self.environment.last_state)
@@ -173,7 +173,7 @@ class Trainer(object):
       values.append(value_)
 
       if (self.thread_index == 0) and (self.local_t % LOG_INTERVAL == 0):
-        print("pi={}".format(pi_))
+        # print("pi={}".format(pi_))
         print(" V={}".format(value_))
 
       prev_state = self.environment.last_state
@@ -198,7 +198,7 @@ class Trainer(object):
 
         self._record_score(sess, summary_writer, summary_op, score_input,
                            self.episode_reward, global_t)
-          
+
         self.episode_reward = 0
         self.environment.reset()
         self.local_network.reset_state()
@@ -233,10 +233,10 @@ class Trainer(object):
     batch_a.reverse()
     batch_adv.reverse()
     batch_R.reverse()
-    
+
     return batch_si, last_action_rewards, batch_a, batch_adv, batch_R, start_lstm_state
 
-  
+
   def _process_pc(self, sess):
     # [pixel change]
     # Sample 20+1 frame (+1 for last next state)
@@ -248,7 +248,7 @@ class Trainer(object):
     batch_pc_a = []
     batch_pc_R = []
     batch_pc_last_action_reward = []
-    
+
     pc_R = np.zeros([20,20], dtype=np.float32)
     if not pc_experience_frames[1].terminal:
       pc_R = self.local_network.run_pc_q_max(sess,
@@ -261,7 +261,7 @@ class Trainer(object):
       a = np.zeros([self.action_size])
       a[frame.action] = 1.0
       last_action_reward = frame.get_last_action_reward(self.action_size)
-      
+
       batch_pc_si.append(frame.state)
       batch_pc_a.append(a)
       batch_pc_R.append(pc_R)
@@ -271,10 +271,10 @@ class Trainer(object):
     batch_pc_a.reverse()
     batch_pc_R.reverse()
     batch_pc_last_action_reward.reverse()
-    
+
     return batch_pc_si, batch_pc_last_action_reward, batch_pc_a, batch_pc_R
 
-  
+
   def _process_vr(self, sess):
     # [Value replay]
     # Sample 20+1 frame (+1 for last next state)
@@ -291,7 +291,7 @@ class Trainer(object):
       vr_R = self.local_network.run_vr_value(sess,
                                              vr_experience_frames[0].state,
                                              vr_experience_frames[0].get_last_action_reward(self.action_size))
-    
+
     # t_max times loop
     for frame in vr_experience_frames[1:]:
       vr_R = frame.reward + self.gamma * vr_R
@@ -306,7 +306,7 @@ class Trainer(object):
 
     return batch_vr_si, batch_vr_last_action_reward, batch_vr_R
 
-  
+
   def _process_rp(self):
     # [Reward prediction]
     rp_experience_frames = self.experience.sample_rp_sequence()
@@ -314,7 +314,7 @@ class Trainer(object):
 
     batch_rp_si = []
     batch_rp_c = []
-    
+
     for i in range(3):
       batch_rp_si.append(rp_experience_frames[i].state)
 
@@ -329,8 +329,8 @@ class Trainer(object):
       rp_c[2] = 1.0 # negative
     batch_rp_c.append(rp_c)
     return batch_rp_si, batch_rp_c
-  
-  
+
+
   def process(self, sess, global_t, summary_writer, summary_op, score_input):
     # Fill experience replay buffer
     if not self.experience.is_full():
@@ -377,7 +377,7 @@ class Trainer(object):
     # [Value replay]
     if self.use_value_replay:
       batch_vr_si, batch_vr_last_action_reward, batch_vr_R = self._process_vr(sess)
-      
+
       vr_feed_dict = {
         self.local_network.vr_input: batch_vr_si,
         self.local_network.vr_last_action_reward_input : batch_vr_last_action_reward,
@@ -396,9 +396,9 @@ class Trainer(object):
 
     # Calculate gradients and copy them to global network.
     sess.run( self.apply_gradients, feed_dict=feed_dict )
-    
+
     self._print_log(global_t)
-    
+
     # Return advanced local step size
     diff_local_t = self.local_t - start_local_t
     return diff_local_t
