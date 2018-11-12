@@ -90,6 +90,7 @@ class Trainer(object):
 
 
   def _record_score(self, sess, summary_writer, summary_op, score_input, score, global_t):
+    # logging rewards, see in tensorboard
     summary_str = sess.run(summary_op, feed_dict={
       score_input: score
     })
@@ -127,7 +128,7 @@ class Trainer(object):
       self.environment.reset()
     if self.experience.is_full():
       self.environment.reset()
-      print("Replay buffer filled")
+      print("DEBUG: Replay buffer filled!")
 
 
   def _print_log(self, global_t):
@@ -135,7 +136,7 @@ class Trainer(object):
       self.prev_local_t += PERFORMANCE_LOG_INTERVAL
       elapsed_time = time.time() - self.start_time
       steps_per_sec = global_t / elapsed_time
-      print("### Performance : {} STEPS in {:.0f} sec. {:.0f} STEPS/sec. {:.2f}M STEPS/hour".format(
+      print("INFO: ### Time cost performance : {} STEPS in {:.0f} sec. {:.0f} STEPS/sec. {:.2f}M STEPS/hour".format(
         global_t,  elapsed_time, steps_per_sec, steps_per_sec * 3600 / 1000000.))
 
 
@@ -174,7 +175,7 @@ class Trainer(object):
 
       if (self.thread_index == 0) and (self.local_t % LOG_INTERVAL == 0):
         # print("pi={}".format(pi_))
-        print(" V={}".format(value_))
+        print("DEBUG: Value from objective is {}".format(value_))
 
       prev_state = self.environment.last_state
 
@@ -194,7 +195,8 @@ class Trainer(object):
 
       if terminal:
         terminal_end = True
-        print("score={}".format(self.episode_reward))
+        print("==============================\nINFO: The episode reward is {}".format(self.episode_reward))
+        print("==============================\nINFO: The timesteps is {}\n".format(global_t))
 
         self._record_score(sess, summary_writer, summary_op, score_input,
                            self.episode_reward, global_t)

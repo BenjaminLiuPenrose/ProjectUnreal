@@ -26,7 +26,7 @@ def worker(conn, env_name):
   env = gym.make(env_name)
   env.reset()
   conn.send(0)
-  
+
   while True:
     command, arg = conn.recv()
 
@@ -59,7 +59,7 @@ class GymEnvironment(environment.Environment):
     action_size = env.action_space.n
     env.close()
     return action_size
-  
+
   def __init__(self, env_name):
     environment.Environment.__init__(self)
 
@@ -72,7 +72,7 @@ class GymEnvironment(environment.Environment):
   def reset(self):
     self.conn.send([COMMAND_RESET, 0])
     self.last_state = self.conn.recv()
-    
+
     self.last_action = 0
     self.last_reward = 0
 
@@ -81,12 +81,12 @@ class GymEnvironment(environment.Environment):
     ret = self.conn.recv()
     self.conn.close()
     self.proc.join()
-    print("gym environment stopped")
+    print("INFO: gym environment stopped")
 
   def process(self, action):
     self.conn.send([COMMAND_ACTION, action])
     state, reward, terminal = self.conn.recv()
-    
+
     pixel_change = self._calc_pixel_change(state, self.last_state)
     self.last_state = state
     self.last_action = action
