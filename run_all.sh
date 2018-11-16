@@ -37,7 +37,16 @@
 python3 main.py --env_type gym --env_name {}NoFrameskip-v4 --use_pixel_change True --use_value_replay True --use_reward_prediction True --max_time_step {}000000 --checkpoint_dir /tmp/{}_checkpoints --log_file /tmp/{}_log
 tensorboard --logdir=/tmp/{}_log
 
-python3 main.py --env_type gym --env_name AlienNoFrameskip-v4 --use_pixel_change True --use_value_replay True --use_reward_prediction True --max_time_step 1000000 --checkpoint_dir /tmp/unreal_checkpoints --log_file /tmp/unreal_log
+python3 main.py --env_type gym --env_name AlienNoFrameskip-v4 --use_pixel_change True --use_value_replay True --use_reward_prediction True --max_time_step 8000000 --checkpoint_dir /tmp/alien_checkpoints --log_file /tmp/alien_log
+tensorboard --logdir=/tmp/alien_log
+
+python3 main.py --env_type gym --env_name AmidarNoFrameskip-v4 --use_pixel_change True --use_value_replay True --use_reward_prediction True --max_time_step 10000000 --checkpoint_dir /tmp/Amidar_checkpoints --log_file /tmp/Amidar_log
+tensorboard --logdir=/tmp/Amidar_log
+
+python3 main.py --env_type gym --env_name AssaultNoFrameskip-v4 --use_pixel_change True --use_value_replay True --use_reward_prediction True --max_time_step 10000000 --checkpoint_dir /tmp/Assault_checkpoints --log_file /tmp/Assault_log
+tensorboard --logdir=/tmp/Assault_log
+
+# ========================================================================================
 
 python3 main.py --env_type gym --env_name AlienNoFrameskip-v4 --use_pixel_change True --use_value_replay True --use_reward_prediction True --checkpoint_dir /tmp/{}_checkpoints --frame_save_dir /tmp/{}_frames
 
