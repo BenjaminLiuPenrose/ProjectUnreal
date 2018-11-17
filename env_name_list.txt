@@ -16,7 +16,7 @@ Pong-ramDeterministic-v4
 Pong-ramNoFrameskip-v0
 Pong-ramNoFrameskip-v4
 
-jpeg
+
 NoFrameskip-v4
 Game	DQN	Gorila	Double	Dueling	Prioritized	A3C	FF*	A3C	FF	A3C	LSTM
 Alien	570.2	813.5	1033.4	1486.5	900.5	182.1	518.4	945.3  480*
