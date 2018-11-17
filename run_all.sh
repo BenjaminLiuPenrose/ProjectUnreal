@@ -49,20 +49,20 @@ tensorboard --logdir=/tmp/Assault_log
 python3 main.py --env_type gym --env_name AsterixNoFrameskip-v4 --use_pixel_change True --use_value_replay True --use_reward_prediction True --max_time_step 10000000 --checkpoint_dir /tmp/Asterix_checkpoints --log_file /tmp/Asterix_log
 tensorboard --logdir=/tmp/Asterix_log
 
-python3 main.py --env_type gym --env_name PongNoFrameskip-v4 --use_pixel_change False --use_value_replay False --use_reward_prediction False --max_time_step 10000000 --checkpoint_dir /tmp/Pong_checkpoints/fff --log_file /tmp/Pong_log/fff
-tensorboard --logdir=/tmp/Pong_log/fff
-python3 main.py --env_type gym --env_name PongNoFrameskip-v4 --use_pixel_change True --use_value_replay False --use_reward_prediction False --max_time_step 10000000 --checkpoint_dir /tmp/Pong_checkpoints/tff --log_file /tmp/Pong_log/tff
-tensorboard --logdir=/tmp/Pong_log/tff
+python3 main.py --env_type gym --env_name PongNoFrameskip-v4 --use_pixel_change False --use_value_replay False --use_reward_prediction False --max_time_step 10000000 --checkpoint_dir /tmp/Pong_fff_checkpoints --log_file /tmp/Pong_fff_log
+tensorboard --logdir=/tmp/Pong_fff_log
+python3 main.py --env_type gym --env_name PongNoFrameskip-v4 --use_pixel_change True --use_value_replay False --use_reward_prediction False --max_time_step 10000000 --checkpoint_dir /tmp/Pong_tff_checkpoints --log_file /tmp/Pong_tff_log
+tensorboard --logdir=/tmp/Pong_tff_log
 
-python3 main.py --env_type gym --env_name BreakoutNoFrameskip-v4 --use_pixel_change False --use_value_replay False --use_reward_prediction False --max_time_step 10000000 --checkpoint_dir /tmp/Breakout_checkpoints/fff --log_file /tmp/Breakout_log/fff
-tensorboard --logdir=/tmp/Breakout_log/fff
-python3 main.py --env_type gym --env_name BreakoutNoFrameskip-v4 --use_pixel_change True --use_value_replay False --use_reward_prediction False --max_time_step 10000000 --checkpoint_dir /tmp/Breakout_checkpoints/tff --log_file /tmp/Breakout_log/tff
-tensorboard --logdir=/tmp/Breakout_log/tff
+python3 main.py --env_type gym --env_name BreakoutNoFrameskip-v4 --use_pixel_change False --use_value_replay False --use_reward_prediction False --max_time_step 10000000 --checkpoint_dir /tmp/Breakout_fff_checkpoints --log_file /tmp/Breakout_fff_log
+tensorboard --logdir=/tmp/Breakout_fff_log
+python3 main.py --env_type gym --env_name BreakoutNoFrameskip-v4 --use_pixel_change True --use_value_replay False --use_reward_prediction False --max_time_step 10000000 --checkpoint_dir /tmp/Breakout_tff_checkpoints --log_file /tmp/Breakout_tff_log
+tensorboard --logdir=/tmp/Breakout_tff_log
 
-python3 main.py --env_type gym --env_name BeamRiderNoFrameskip-v4 --use_pixel_change False --use_value_replay False --use_reward_prediction False --max_time_step 10000000 --checkpoint_dir /tmp/BeamRider_checkpoints/fff --log_file /tmp/BeamRider_log/fff
-tensorboard --logdir=/tmp/BeamRider_log/fff
-python3 main.py --env_type gym --env_name BeamRiderNoFrameskip-v4 --use_pixel_change True --use_value_replay False --use_reward_prediction False --max_time_step 10000000 --checkpoint_dir /tmp/BeamRider_checkpoints/tff --log_file /tmp/BeamRider_log/tff
-tensorboard --logdir=/tmp/BeamRider_log/tff
+python3 main.py --env_type gym --env_name BeamRiderNoFrameskip-v4 --use_pixel_change False --use_value_replay False --use_reward_prediction False --max_time_step 10000000 --checkpoint_dir /tmp/BeamRider_fff_checkpoints --log_file /tmp/BeamRider_fff_log
+tensorboard --logdir=/tmp/BeamRider_fff_log
+python3 main.py --env_type gym --env_name BeamRiderNoFrameskip-v4 --use_pixel_change True --use_value_replay False --use_reward_prediction False --max_time_step 10000000 --checkpoint_dir /tmp/BeamRider_tff_checkpoints --log_file /tmp/BeamRider_tff_log/tff
+tensorboard --logdir=/tmp/BeamRider_tff_log
 # ========================================================================================
 
 python3 main.py --env_type gym --env_name AlienNoFrameskip-v4 --use_pixel_change True --use_value_replay True --use_reward_prediction True --checkpoint_dir /tmp/{}_checkpoints --frame_save_dir /tmp/{}_frames
