@@ -106,3 +106,6 @@ add new tasks
 - UnrealModel._create_network._create_rp_network
 - Trainer.process._process_rp
 - main
+
+- setup.py
+- cloudml-gpu.yaml

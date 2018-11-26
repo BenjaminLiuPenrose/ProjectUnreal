@@ -67,14 +67,17 @@ tensorboard --logdir=/tmp/BeamRider_fff_log
 python3 main.py --env_type gym --env_name BeamRiderNoFrameskip-v4 --use_pixel_change True --use_value_replay False --use_reward_prediction False --max_time_step 10000000 --checkpoint_dir /tmp/BeamRider_tff_checkpoints --log_file /tmp/BeamRider_tff_log
 tensorboard --logdir=/tmp/BeamRider_tff_log
 
+
+# ======================================================================================
+
+
 python3 main.py --env_type gym --env_name QbertNoFrameskip-v4 --use_pixel_change False --use_value_replay False --use_reward_prediction False --max_time_step 10000000 --checkpoint_dir /tmp/Qbert_fff_checkpoints --log_file /tmp/Qbert_fff_log
 tensorboard --logdir=/tmp/Qbert_fff_log
 python3 main.py --env_type gym --env_name QbertNoFrameskip-v4 --use_pixel_change True --use_value_replay False --use_reward_prediction False --max_time_step 10000000 --checkpoint_dir /tmp/Qbert_tff_checkpoints --log_file /tmp/Qbert_tff_log
 tensorboard --logdir=/tmp/Qbert_tff_log
 
 python3 main.py --env_type gym --env_name SpaceInvadersNoFrameskip-v4 --use_pixel_change False --use_value_replay False --use_reward_prediction False --max_time_step 10000000 --checkpoint_dir /tmp/SpaceInvaders_fff_checkpoints --log_file /tmp/SpaceInvaders_fff_log
-tensorboard --logdir=/tmp/SpaceInvaders_fff_log
-# ========================================================================================
+tensorboard --logdir=gs://tmpp/SpaceInvaders_fff_log
 
 python3 main.py --env_type gym --env_name AlienNoFrameskip-v4 --use_pixel_change True --use_value_replay True --use_reward_prediction True --checkpoint_dir /tmp/{}_checkpoints --frame_save_dir /tmp/{}_frames
 
