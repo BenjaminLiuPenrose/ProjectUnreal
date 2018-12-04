@@ -14,6 +14,7 @@ game:
 --
 (QbertNoFrameskip-v4, tmp/Qbert_log/[experiemnt type])
 (SpaceInvadersNoFrameskip-v4, tmp/SpaceInvaders_log/[experiemnt type])
+Seaquest
 
 
 experimet: (pc, vr, rp)
@@ -29,6 +30,25 @@ experiment: (True, True, True), (False, False, True) for Pong Breakout Beamrider
 
 be:
 experiment: (False, False, False), (True, False, False), for Pong Breakout Beamrider
+
+Update @ 11/26
+图放一个中 - Pong, Breakout
+2 trues 3 games
+prepare plots and nn pics
+
+zx:
+all experiments for Seaquest (False, False, False), (False, False, True), (False, True, True), (True, True, True)
+prepare nn arch pics
+
+be:
+experiment: (False, True, True) for Pong, Breakout, (False, True, False) for Seaquest
+tanscript, ppt
+
+Meet @ 11/30
+图放一个中 - Pong, Breakout
+add more aux tasks
+
+
 
 sample cmd is in `run_all.sh`
 atrai game list and ref rewards is `env_name_list.txt`
