@@ -247,6 +247,9 @@ class Application(object):
             weight_meta[min_idx] *= 0.95
             self.run_train(True,True,True,weight_meta[0]/100,weight_meta[1],weight_meta[2],True,True,step_1)
 
+    ###############
+    ### Zhaoxin ###
+    ###############
 
     def run_train(self,pc,vr,rp,pc_w,vr_w,rp_w,save,load_cp,step):
         self.current_reward = 0
@@ -323,7 +326,16 @@ class Application(object):
         config = tf.ConfigProto(log_device_placement=False,
                                 allow_soft_placement=True)
         config.gpu_options.allow_growth = True
-        ### TO DO:
+
+        ################
+        ### Benjamin ###
+        ################
+        try:
+            self.sess.close()
+        except:
+            pass
+        # tf.reset_default_graph()
+
         self.sess = tf.Session(config=config)
 
         self.sess.run(tf.global_variables_initializer())
@@ -380,6 +392,9 @@ class Application(object):
             # if i != 0:
             t.join()
 
+    ###############
+    ### Zhaoxin ###
+    ###############
     def train_function(self, parallel_index, preparing,save,step):
         """ Train each environment. """
 
