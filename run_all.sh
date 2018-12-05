@@ -83,3 +83,6 @@ python3 main.py --env_type gym --env_name AlienNoFrameskip-v4 --use_pixel_change
 
 python3 main.py --env_type gym --env_name AlienNoFrameskip-v4 --use_pixel_change True --use_value_replay True --use_reward_prediction True --checkpoint_dir /tmp/{}_checkpoints --frame_save_dir /tmp/{}_frames
 
+
+python3 main.py --env_type gym --env_name PongNoFrameskip-v4 --use_pixel_change True --use_value_replay True --use_reward_prediction True --max_time_step 10000000 --checkpoint_dir /tmp/Pong_ttt_checkpoints_001 --log_file /tmp/Pong_ttt_log_001
+

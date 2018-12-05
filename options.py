@@ -36,6 +36,8 @@ def get_options(option_type):
     parser.add_argument("--gamma_pc", type=float, default=0.9, help="discount factor for pixel control")
     parser.add_argument("--entropy_beta", type=float, default=0.001, help="entropy regularization constant")
     parser.add_argument("--pixel_change_lambda", type=float, default=0.001, help="pixel change lambda") # 0.05, 0.01 ~ 0.1 for lab, 0.0001 ~ 0.01 for gym
+    parser.add_argument("--value_replay_lambda", type=float, default=1.0, help="value replay lambda")
+    parser.add_argument("--reward_prediction_lambda", type=float, default=1.0, help="reward prediction lambda")
     parser.add_argument("--experience_history_size", type=int, default=2000, help="experience replay buffer size")
     parser.add_argument("--max_time_step", type=int, default=10 * 10**7, help="max time steps")
     parser.add_argument("--save_interval_step", type=int, default=100 * 1000, help="saving interval steps")

@@ -27,6 +27,8 @@ class Trainer(object):
                use_value_replay,
                use_reward_prediction,
                pixel_change_lambda,
+               value_replay_lambda,
+               reward_predictoion_lambda,
                entropy_beta,
                local_t_max,
                gamma,
@@ -55,6 +57,8 @@ class Trainer(object):
                                      use_value_replay,
                                      use_reward_prediction,
                                      pixel_change_lambda,
+                                     value_replay_lambda,
+                                     reward_predictoion_lambda,
                                      entropy_beta,
                                      device)
     self.local_network.prepare_loss()
@@ -71,12 +75,20 @@ class Trainer(object):
     # For log output
     self.prev_local_t = 0
 
+    self.total_rewards = 0.0
+
   def prepare(self):
     self.environment = Environment.create_environment(self.env_type,
                                                       self.env_name)
 
   def stop(self):
     self.environment.stop()
+
+  def reset(self):
+    self.environment.reset()
+
+  def mod_stop(self):
+    self.environment.mod_stop()
 
   def _anneal_learning_rate(self, global_time_step):
     learning_rate = self.initial_learning_rate * (self.max_global_time_step - global_time_step) / self.max_global_time_step
@@ -188,6 +200,11 @@ class Trainer(object):
       self.experience.add_frame(frame)
 
       self.episode_reward += reward
+
+      ##############
+      ## Benjamin ##
+      ##############
+      self.total_rewards += reward
 
       rewards.append( reward )
 
@@ -335,18 +352,23 @@ class Trainer(object):
 
   def process(self, sess, global_t, summary_writer, summary_op, score_input):
     # Fill experience replay buffer
+    #print("1")
     if not self.experience.is_full():
+      #print("1.5")
       self._fill_experience(sess)
-      return 0
+      #print("1.75")
+      return 0, 0
 
     start_local_t = self.local_t
 
     cur_learning_rate = self._anneal_learning_rate(global_t)
 
     # Copy weights from shared to local
+    #print("2")
     sess.run( self.sync )
 
     # [Base]
+    #print("3")
     batch_si, batch_last_action_rewards, batch_a, batch_adv, batch_R, start_lstm_state = \
           self._process_base(sess,
                              global_t,
@@ -403,4 +425,5 @@ class Trainer(object):
 
     # Return advanced local step size
     diff_local_t = self.local_t - start_local_t
-    return diff_local_t
+    total_rewards = self.total_rewards
+    return diff_local_t, total_rewards

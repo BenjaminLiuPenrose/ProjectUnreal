@@ -83,6 +83,11 @@ class GymEnvironment(environment.Environment):
     self.proc.join()
     print("INFO: gym environment stopped")
 
+  def mod_stop(self):
+    ret = self.conn.recv()
+    self.proc.join()
+    print("INFO: mod gym environment stopped")
+
   def process(self, action):
     self.conn.send([COMMAND_ACTION, action])
     state, reward, terminal = self.conn.recv()

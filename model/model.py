@@ -34,6 +34,8 @@ class UnrealModel(object):
                use_value_replay,
                use_reward_prediction,
                pixel_change_lambda,
+               value_replay_lambda,
+               reward_prediction_lambda,
                entropy_beta,
                device,
                for_display=False):
@@ -44,6 +46,8 @@ class UnrealModel(object):
     self._use_value_replay = use_value_replay
     self._use_reward_prediction = use_reward_prediction
     self._pixel_change_lambda = pixel_change_lambda
+    self._value_replay_lambda = value_replay_lambda
+    self._reward_prediction_lambda = reward_prediction_lambda
     self._entropy_beta = entropy_beta
 
     self._create_network(for_display)
@@ -315,7 +319,7 @@ class UnrealModel(object):
     self.vr_r = tf.placeholder("float", [None])
 
     # Value loss (output)
-    vr_loss = tf.nn.l2_loss(self.vr_r - self.vr_v)
+    vr_loss = self._value_replay_lambda * tf.nn.l2_loss(self.vr_r - self.vr_v)
     return vr_loss
 
 
@@ -325,7 +329,7 @@ class UnrealModel(object):
 
     # Reward prediction loss (output)
     rp_c = tf.clip_by_value(self.rp_c, 1e-20, 1.0)
-    rp_loss = -tf.reduce_sum(self.rp_c_target * tf.log(rp_c))
+    rp_loss = self._reward_prediction_lambda * (-tf.reduce_sum(self.rp_c_target * tf.log(rp_c)))
     return rp_loss
 
 
