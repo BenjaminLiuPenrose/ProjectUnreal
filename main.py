@@ -158,9 +158,9 @@ class Application(object):
             print("DEBUG>>> global step set: ", self.global_t)
             # set wall time
             wall_t_fname = flags.checkpoint_dir + '/' + 'wall_t.' + str(self.global_t)
-            with open(wall_t_fname, 'r') as f:
-                self.wall_t = float(f.read())
-                self.next_save_steps = (self.global_t + flags.save_interval_step) // flags.save_interval_step * flags.save_interval_step
+            # with open(wall_t_fname, 'r') as f:
+            #     self.wall_t = float(f.read())
+            self.next_save_steps = (self.global_t + flags.save_interval_step) // flags.save_interval_step * flags.save_interval_step
 
         else:
             print("DEBUG: Could not find old checkpoint")
@@ -203,8 +203,12 @@ class Application(object):
         # Write wall time
         wall_t = time.time() - self.start_time
         wall_t_fname = flags.checkpoint_dir + '/' + 'wall_t.' + str(self.global_t)
-        with open(wall_t_fname, 'w') as f:
-            f.write(str(wall_t))
+        # print(206)
+        # with open(wall_t_fname, 'w') as f:
+        #     print("write wall time")
+        #     print(209)
+        #     f.write(str(wall_t))
+        #     print(211)
 
         print('Start saving.')
         self.saver.save(self.sess,
@@ -226,8 +230,12 @@ class Application(object):
         # print('You pressed Ctrl+C!')
         self.terminate_reqested = True
 
+    #######################################################################################################################
+    ########################   Local Implementation #######################################################################
+    #######################################################################################################################
+
     ################
-    ### Benjamin ###
+    ### Zhaoxin ####
     ################
     def meta_run(self):
         # flags.pixel_change_lambda, flags.value_replay_lambda, flags.reward_prediction_lambda
@@ -236,16 +244,17 @@ class Application(object):
         step_1 = 100000
         num_iter_meta = int(flags.max_time_step/step_1)
         for iters in range(num_iter_meta):
-            print("current iteration: ",iters)
+            print("=====================================================current iteration: ",iters, "==============================================")
             self.total_reward = []
-            self.run_train(True,False,False,weight_meta[0]/1000,weight_meta[1],weight_meta[2],False,True,step_0)
-            self.run_train(False,True,False,weight_meta[0]/1000,weight_meta[1],weight_meta[2],False,True,step_0)
-            self.run_train(False,False,True,weight_meta[0]/1000,weight_meta[1],weight_meta[2],False,True,step_0)
-            max_idx = self.total_reward.index(max(self.total_reward))[0]
-            min_idx = self.total_reward.index(min(self.total_reward))[0]
+            self.run_train(True,False,False,weight_meta[0]/1000,weight_meta[1],weight_meta[2],False,True,step_1*iters+step_0)
+            self.run_train(False,True,False,weight_meta[0]/1000,weight_meta[1],weight_meta[2],False,True,step_1*iters+step_0)
+            self.run_train(False,False,True,weight_meta[0]/1000,weight_meta[1],weight_meta[2],False,True,step_1*iters+step_0)
+            # print(self.total_reward.index(max(self.total_reward)))
+            max_idx = self.total_reward.index(max(self.total_reward))
+            min_idx = self.total_reward.index(min(self.total_reward))
             weight_meta[max_idx] *= 1.05
             weight_meta[min_idx] *= 0.95
-            self.run_train(True,True,True,weight_meta[0]/100,weight_meta[1],weight_meta[2],True,True,step_1)
+            self.run_train(True,True,True,weight_meta[0]/100,weight_meta[1],weight_meta[2],True,True,step_1*(iters+1))
 
     ###############
     ### Zhaoxin ###
@@ -254,12 +263,12 @@ class Application(object):
     def run_train(self,pc,vr,rp,pc_w,vr_w,rp_w,save,load_cp,step):
         self.current_reward = 0
         self.mod_run(pc,vr,rp,pc_w,vr_w,rp_w,save,load_cp,step)
-        print("5")
+        # print("5")
         for (i, t) in enumerate(self.train_threads):
             print("thread:", i)
             if i != 0:
                 t.join()
-        print("6")
+        # print("6")
         self.total_reward.append(self.current_reward)
 
     def mod_run(self,pc,vr,rp,pc_w,vr_w,rp_w,save,load_cp,step):
@@ -327,15 +336,6 @@ class Application(object):
                                 allow_soft_placement=True)
         config.gpu_options.allow_growth = True
 
-        ################
-        ### Benjamin ###
-        ################
-        try:
-            self.sess.close()
-        except:
-            pass
-        # tf.reset_default_graph()
-
         self.sess = tf.Session(config=config)
 
         self.sess.run(tf.global_variables_initializer())
@@ -362,9 +362,16 @@ class Application(object):
             print("DEBUG>>> global step set: ", self.global_t)
             # set wall time
             wall_t_fname = flags.checkpoint_dir + '/' + 'wall_t.' + str(self.global_t)
-            with open(wall_t_fname, 'r') as f:
-                self.wall_t = float(f.read())
-                self.next_save_steps = (self.global_t + flags.save_interval_step) // flags.save_interval_step * flags.save_interval_step
+
+            ################
+            ### Benjamin ###
+            ################
+            self.wall_t = 0.0
+            # print(364)
+            # with open(wall_t_fname, 'r') as f:
+            #     print(366)
+            #     self.wall_t = float(f.read())
+            self.next_save_steps = (self.global_t + flags.save_interval_step) // flags.save_interval_step * flags.save_interval_step
 
         else:
             print("DEBUG: Could not find old checkpoint")
@@ -384,13 +391,18 @@ class Application(object):
 
         for t in self.train_threads:
             t.start()
-        print("after start")
+        # print("after start")
         #signal.pause()
 
         for t in (self.train_threads):
             print("thread:", i)
-            # if i != 0:
             t.join()
+
+        ###############
+        ### Zhaoxin ###
+        ###############
+        tf.reset_default_graph()
+        self.sess.close()
 
     ###############
     ### Zhaoxin ###
@@ -414,7 +426,7 @@ class Application(object):
                 trainer.stop()
                 break
             if self.global_t > step:
-                print("1")
+                # print("1")
                 # if parallel_index != 0:
                 #     trainer.stop()
                 if parallel_index == 0:
@@ -439,9 +451,12 @@ class Application(object):
             self.global_t += diff_global_t
             self.current_reward += total_reward
 
-        print("2")
+        # print("2")
         trainer.stop()
 
+    ###############
+    ### Benjamin ##
+    ###############
     def mod_save(self):
         """ Save checkpoint.
         Called from therad-0.
@@ -453,11 +468,15 @@ class Application(object):
         if not os.path.exists(flags.checkpoint_dir):
           os.mkdir(flags.checkpoint_dir)
 
-        # # Write wall time
-        # wall_t = time.time() - self.start_time
-        # wall_t_fname = flags.checkpoint_dir + '/' + 'wall_t.' + str(self.global_t)
+        # Write wall time
+        wall_t = time.time() - self.start_time
+        wall_t_fname = flags.checkpoint_dir + '/' + 'wall_t.' + str(self.global_t)
+
         # with open(wall_t_fname, 'w') as f:
-        #   f.write(str(wall_t))
+        #     print(469)
+        #     print(self.global_t)
+        #     f.write(str(wall_t))
+        #     print(471)
 
         print('Start saving.')
         self.saver.save(self.sess,
